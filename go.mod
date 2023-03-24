@@ -1,9 +1,7 @@
 module github.com/2dust/AndroidLibXrayLite
 
-go 1.19
+go 1.18
 
-require (
-	github.com/xtls/xray-core v1.7.2
-	golang.org/x/mobile v0.0.0-20221020085226-b36e6246172e
-	golang.org/x/sys v0.1.0
-)
+require github.com/justlovediaodiao/https-proxy v1.0.0
+
+require github.com/justlovediaodiao/udp-over-tcp v0.0.0-20210125124315-e360f70b781d // indirect
