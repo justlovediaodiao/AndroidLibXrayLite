@@ -1,4 +1,4 @@
-github.com/justlovediaodiao/https-proxy v0.9.1 h1:Kbw2IfX/YUx2Y8WNv6lxRgl1CwjoHH+872Wnwvq/GTI=
-github.com/justlovediaodiao/https-proxy v0.9.1/go.mod h1:c3RNm27DhFJ478LxX7FHAtXjL3ZEnk9FfTiF7Ukze7k=
-github.com/justlovediaodiao/udp-over-tcp v0.0.0-20210125124315-e360f70b781d h1:frd6QqyfJSosOu+dx+PP5NZUApi1qI+40vFAHIlJq/4=
-github.com/justlovediaodiao/udp-over-tcp v0.0.0-20210125124315-e360f70b781d/go.mod h1:QzWYpgFVaGA1bnErJqm72/RzFdB1W8w719FqcJ026pM=
+github.com/justlovediaodiao/https-proxy v0.9.2 h1:AU3beT9RsNEB+QcuSjp7+8xmuq8LDm5PzWnCtYMWjKs=
+github.com/justlovediaodiao/https-proxy v0.9.2/go.mod h1:tRWDNqy6Bnv/YuaP/KN53n0nPIwM/ldp4BbUhaW0wwk=
+github.com/justlovediaodiao/udp-over-tcp v0.0.0-20230325130704-afedb2ee6e61 h1:d4+pRyWgAWhThFIw0TxgRGxsVNnec9Q02EyviZ+KFTk=
+github.com/justlovediaodiao/udp-over-tcp v0.0.0-20230325130704-afedb2ee6e61/go.mod h1:QzWYpgFVaGA1bnErJqm72/RzFdB1W8w719FqcJ026pM=
