@@ -6,7 +6,8 @@ import (
 	"sync"
 )
 
-/*V2RayPoint V2Ray Point Server
+/*
+V2RayPoint V2Ray Point Server
 This is territory of Go, so no getter and setters!
 */
 type V2RayPoint struct {
@@ -56,7 +57,7 @@ func (v *V2RayPoint) StopLoop() (err error) {
 	return
 }
 
-//Delegate Funcation
+// Delegate Funcation
 func (v *V2RayPoint) QueryStats(tag string, direct string) int64 {
 	return 0
 }
@@ -96,7 +97,7 @@ func (v *V2RayPoint) MeasureDelay() (int64, error) {
 func InitV2Env(envPath string) {
 }
 
-//Delegate Funcation
+// Delegate Funcation
 func TestConfig(ConfigureFileContent string) error {
 	_, err := LoadJSONConfig(ConfigureFileContent)
 	return err
@@ -114,7 +115,8 @@ func NewV2RayPoint(s V2RayVPNServiceSupportsSet, adns bool) *V2RayPoint {
 	}
 }
 
-/*CheckVersionX string
+/*
+CheckVersionX string
 This func will return libv2ray binding version and V2Ray version used.
 */
 func CheckVersionX() string {
