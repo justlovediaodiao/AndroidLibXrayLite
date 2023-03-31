@@ -1,5 +1,7 @@
 # AndroidLibXrayLite
 
+Change v2ray-core to [https-proxy](https://github.com/justlovediaodiao/https-proxy). Buiding with [v2rayNG](https://github.com/2dust/v2rayNG) to make https-proxy runs on Android.
+
 ## Build requirements
 * JDK
 * Android SDK

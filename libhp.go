@@ -6,8 +6,6 @@ import (
 	"github.com/justlovediaodiao/https-proxy/client"
 )
 
-type hpPoint struct{}
-
 func StartVpoint(c *client.Config) error {
 	return client.Start(c)
 }
