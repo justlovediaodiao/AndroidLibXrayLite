@@ -94,7 +94,7 @@ func (v *V2RayPoint) MeasureDelay() (int64, error) {
 }
 
 // InitV2Env set v2 asset path
-func InitV2Env(envPath string) {
+func InitV2Env(envPath string, key string) {
 }
 
 // Delegate Funcation
@@ -120,6 +120,6 @@ CheckVersionX string
 This func will return libv2ray binding version and V2Ray version used.
 */
 func CheckVersionX() string {
-	var version = 24
+	var version = 26
 	return fmt.Sprintf("Lib v%d, Xray-core v1", version)
 }
