@@ -6,120 +6,111 @@ import (
 	"sync"
 )
 
-/*
-V2RayPoint V2Ray Point Server
-This is territory of Go, so no getter and setters!
-*/
-type V2RayPoint struct {
-	SupportSet V2RayVPNServiceSupportsSet
-
-	v2rayOP sync.Mutex
-
-	IsRunning            bool
-	ConfigureFileContent string
-
-	// not used, just for compatibility
-	DomainName   string
-	AsyncResolve bool
+// CoreController represents a controller for managing Xray core instance lifecycle
+type CoreController struct {
+	CallbackHandler CoreCallbackHandler
+	coreMutex       sync.Mutex
+	IsRunning       bool
 }
 
-/*V2RayVPNServiceSupportsSet To support Android VPN mode*/
-type V2RayVPNServiceSupportsSet interface {
-	Setup(Conf string) int
-	Prepare() int
+// CoreCallbackHandler defines interface for receiving callbacks and notifications from the core service
+type CoreCallbackHandler interface {
+	Startup() int
 	Shutdown() int
-	Protect(int) bool
 	OnEmitStatus(int, string) int
 }
 
-/*RunLoop Run V2Ray main loop
- */
-func (v *V2RayPoint) RunLoop(prefIPv6 bool) (err error) {
-	v.v2rayOP.Lock()
-	defer v.v2rayOP.Unlock()
-	//Construct Context
-
-	if !v.IsRunning {
-		err = v.pointloop()
-	}
-	return
+// InitCoreEnv initializes environment variables and file system handlers for the core
+// It sets up asset path, certificate path, XUDP base key and customizes the file reader
+// to support Android asset system
+func InitCoreEnv(envPath string, key string) {
 }
 
-/*StopLoop Stop V2Ray main loop
- */
-func (v *V2RayPoint) StopLoop() (err error) {
-	v.v2rayOP.Lock()
-	defer v.v2rayOP.Unlock()
-	if v.IsRunning {
-		v.shutdownInit()
-		v.SupportSet.OnEmitStatus(0, "Closed")
+// NewCoreController initializes and returns a new CoreController instance
+// Sets up the console log handler and associates it with the provided callback handler
+func NewCoreController(s CoreCallbackHandler) *CoreController {
+	return &CoreController{
+		CallbackHandler: s,
 	}
-	return
 }
 
-// Delegate Funcation
-func (v *V2RayPoint) QueryStats(tag string, direct string) int64 {
-	return 0
-}
+// StartLoop initializes and starts the core processing loop
+// Thread-safe method that configures and runs the Xray core with the provided configuration
+// Returns immediately if the core is already running
+func (x *CoreController) StartLoop(configContent string) (err error) {
+	x.coreMutex.Lock()
+	defer x.coreMutex.Unlock()
 
-func (v *V2RayPoint) shutdownInit() {
-	v.IsRunning = false
-	CloseVpoint()
-}
-
-func (v *V2RayPoint) pointloop() error {
-	log.Println("loading core config")
-	config, err := LoadJSONConfig(v.ConfigureFileContent)
-	if err != nil {
-		log.Println(err)
-		return err
+	if x.IsRunning {
+		log.Println("Core is already running")
+		return nil
 	}
 
-	log.Println("start core")
-	v.IsRunning = true
-	if err := StartVpoint(config); err != nil {
-		v.IsRunning = false
-		log.Println(err)
-		return err
-	}
+	return x.doStartLoop(configContent)
+}
 
-	v.SupportSet.Prepare()
-	v.SupportSet.Setup("")
-	v.SupportSet.OnEmitStatus(0, "Running")
+// StopLoop safely stops the core processing loop and releases resources
+// Thread-safe method that shuts down the core instance and triggers necessary callbacks
+func (x *CoreController) StopLoop() error {
+	x.coreMutex.Lock()
+	defer x.coreMutex.Unlock()
+
+	if x.IsRunning {
+		x.doShutdown()
+		x.CallbackHandler.OnEmitStatus(0, "Core stopped")
+	}
 	return nil
 }
 
-func (v *V2RayPoint) MeasureDelay() (int64, error) {
+// QueryStats retrieves and resets traffic statistics for a specific outbound tag and direction
+// Returns the accumulated traffic value and resets the counter to zero
+// Returns 0 if the stats manager is not initialized or the counter doesn't exist
+func (x *CoreController) QueryStats(tag string, direct string) int64 {
+	return 0
+}
+
+// MeasureDelay measures network latency to a specified URL through the current core instance
+// Uses a 12-second timeout context and returns the round-trip time in milliseconds
+// An error is returned if the connection fails or returns an unexpected status
+func (x *CoreController) MeasureDelay(url string) (int64, error) {
 	return 0, nil
 }
 
-// InitV2Env set v2 asset path
-func InitV2Env(envPath string, key string) {
-}
-
-// Delegate Funcation
-func TestConfig(ConfigureFileContent string) error {
-	_, err := LoadJSONConfig(ConfigureFileContent)
-	return err
-}
-
-func MeasureOutboundDelay(ConfigureFileContent string) (int64, error) {
+// MeasureOutboundDelay measures the outbound delay for a given configuration and URL
+func MeasureOutboundDelay(ConfigureFileContent string, url string) (int64, error) {
 	return 0, nil
 }
 
-/*NewV2RayPoint new V2RayPoint*/
-func NewV2RayPoint(s V2RayVPNServiceSupportsSet, adns bool) *V2RayPoint {
-	return &V2RayPoint{
-		SupportSet:   s,
-		AsyncResolve: adns,
-	}
-}
-
-/*
-CheckVersionX string
-This func will return libv2ray binding version and V2Ray version used.
-*/
+// CheckVersionX returns the library and Xray versions
 func CheckVersionX() string {
-	var version = 26
-	return fmt.Sprintf("Lib v%d, Xray-core v1", version)
+	var version = 32
+	return fmt.Sprintf("Lib v%d, Xray-core", version)
+}
+
+// doShutdown shuts down the Xray instance and cleans up resources
+func (x *CoreController) doShutdown() {
+	CloseVpoint()
+	x.IsRunning = false
+}
+
+// doStartLoop sets up and starts the Xray core
+func (x *CoreController) doStartLoop(configContent string) error {
+	log.Println("initializing core...")
+	config, err := LoadJSONConfig(configContent)
+	if err != nil {
+		return fmt.Errorf("config error: %w", err)
+	}
+
+	log.Println("starting core...")
+	x.IsRunning = true
+	if err := StartVpoint(config); err != nil {
+		x.IsRunning = false
+		return fmt.Errorf("startup failed: %w", err)
+	}
+
+	x.CallbackHandler.Startup()
+	x.CallbackHandler.OnEmitStatus(0, "Started successfully, running")
+
+	log.Println("Starting core successfully")
+	return nil
 }

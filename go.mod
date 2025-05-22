@@ -1,6 +1,6 @@
 module github.com/justlovediaodiao/AndroidLibXrayLite
 
-go 1.21
+go 1.24
 
 require github.com/justlovediaodiao/https-proxy v0.0.0-20230327032611-2afeb928c0f9
 
