@@ -1,7 +1,7 @@
 module github.com/justlovediaodiao/AndroidLibXrayLite
 
-go 1.24
+go 1.26
 
-require github.com/justlovediaodiao/https-proxy v0.0.0-20251207063855-efbc2e4a09ba
+require github.com/justlovediaodiao/https-proxy v0.0.0-20260416084752-1728819db5a6
 
-require github.com/justlovediaodiao/udp-over-tcp v0.0.0-20251206173216-1ed6d83b232e // indirect
+require github.com/justlovediaodiao/udp-over-tcp v0.0.0-20260416084425-8a9efaac7cc4 // indirect

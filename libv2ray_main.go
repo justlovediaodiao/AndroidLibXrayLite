@@ -37,7 +37,7 @@ func NewCoreController(s CoreCallbackHandler) *CoreController {
 // StartLoop initializes and starts the core processing loop
 // Thread-safe method that configures and runs the Xray core with the provided configuration
 // Returns immediately if the core is already running
-func (x *CoreController) StartLoop(configContent string) (err error) {
+func (x *CoreController) StartLoop(configContent string, tunFd int32) (err error) {
 	x.coreMutex.Lock()
 	defer x.coreMutex.Unlock()
 
@@ -83,7 +83,7 @@ func MeasureOutboundDelay(ConfigureFileContent string, url string) (int64, error
 
 // CheckVersionX returns the library and Xray versions
 func CheckVersionX() string {
-	var version = 33
+	var version = 36
 	return fmt.Sprintf("Lib v%d, Xray-core", version)
 }
 
